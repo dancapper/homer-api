@@ -49,20 +49,19 @@ class Dashboard {
     */
     public function getLoggedIn(){
 
-	$answer = array();
+        $answer = array();
 
-	if($this->authmodule == false) return $answer;
+        if ($this->authmodule == false) return $answer;
 
-        if(!$this->getContainer('auth')->checkSession())
-	{
-		$answer['sid'] = session_id();
-                $answer['auth'] = 'false';
-                $answer['status'] = 403;
-                $answer['message'] = 'bad session';
-                $answer['data'] = array();
-	}
+        if (!$this->getContainer('auth')->checkSession()) {
+            $answer['sid'] = session_id();
+            $answer['auth'] = 'false';
+            $answer['status'] = 403;
+            $answer['message'] = 'bad session';
+            $answer['data'] = array();
+        }
 
-	return $answer;
+        return $answer;
     }
     
 
@@ -70,16 +69,16 @@ class Dashboard {
         
         //if (!is_string($json)) $json = json_encode($json);                                
 
-         if(count(($adata = $this->getLoggedIn()))) return $adata;
+        if (count($adata = $this->getLoggedIn()) > 0) return $adata;
 
-        $globalmenu = array();        
-	$boards = array();	
-	$menu = array();
+        $globalmenu = array();
+        global $boards;
+        $boards = array();
+        $menu = array();
 
-	$db = $this->getContainer('db');
+        $db = $this->getContainer('db');
         $db->select_db(DB_CONFIGURATION);
         $db->dbconnect();
-
         $table = "user_menu";
         $query = "SELECT id,name,icon,active,alias FROM ".$table." WHERE active = 1 order by weight ASC";
         $data = $db->loadObjectArray($query);
@@ -135,7 +134,7 @@ class Dashboard {
 
         /* store */    
         if ($handle = opendir(DASHBOARD_PARAM)) {
-	   while (false !== ($file = readdir($handle))) {
+            while (false !== ($file = readdir($handle))) {
 		if ($file[0] == "_") {
 		
 		    $boardid = str_replace(".json", "", $file);
@@ -157,7 +156,7 @@ class Dashboard {
 		    fclose($myfile);		
         	}
 	    }
-	    closedir($handle);	     	    	    
+            closedir($handle);
 	}
 	
 	$menu['subItems'] = $boards;
@@ -310,6 +309,7 @@ class Dashboard {
 	$db = $this->getContainer('db');
         $db->select_db(DB_CONFIGURATION);
         $db->dbconnect();
+        global $boards;
         
         $data = array();
 
