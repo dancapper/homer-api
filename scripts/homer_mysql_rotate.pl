@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS `[TRANSACTION]_[TIMESTAMP]` (
   `contact_port` int(10) NOT NULL DEFAULT 0,
   `originator_ip` varchar(60) NOT NULL DEFAULT '',
   `originator_port` int(10) NOT NULL DEFAULT 0,
+  `expires` int(5) NOT NULL DEFAULT '-1',
   `correlation_id` varchar(256) NOT NULL DEFAULT '',
   `custom_field1` varchar(120) NOT NULL DEFAULT '',
   `custom_field2` varchar(120) NOT NULL DEFAULT '',
@@ -150,7 +151,7 @@ foreach my $table (keys %{ $CONFIG->{"DATA_TABLE_ROTATION"} }) {
         my $sth = $db->prepare($query);
         $sth->execute();
         my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time() - 86400*$rotation_horizon);
-        my $oldest = sprintf("%04d%02d%02d",($year+=1900),(++$mon),$mday,$hour);
+        my $oldest = sprintf("%04d%02d%02d",($year+=1900),(++$mon),$mday);
         $oldest+=0;
         while(my @ref = $sth->fetchrow_array()) {
            my $table_name = $ref[0];
