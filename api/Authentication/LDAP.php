@@ -127,6 +127,12 @@ class LDAP extends Authentication {
                         return $user;
                     }
                 }
+                else {
+                    error_log("Unable to bind user - UN: [" . $result[0]['dn'] . "] PW: [" . $param['password'] . "]");
+                }
+            }
+            else {
+                error_log("User not found - UN: [" . $param['username'] . "]");
             }
         }
         return array();
