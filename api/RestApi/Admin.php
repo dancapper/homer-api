@@ -261,7 +261,7 @@ class Admin {
         $data = array();
         
         $table = "alias";            
-        $query = "SELECT id,gid,ip,port,capture_id,alias,status,created FROM ".$table." order by id DESC;";
+        $query = "SELECT id,gid,ip,port,capture_id,alias,is_stp,status,created FROM ".$table." order by id DESC;";
         $query  = $db->makeQuery($query);                
         $data = $db->loadObjectArray($query);
 
@@ -309,6 +309,7 @@ class Admin {
         $arrwhere = "";
         
         $update['status'] = getVar('status', true, $param, 'bool');
+        $update['is_stp'] = getVar('is_stp', '0', $param, 'string');
         $update['ip'] = getVar('ip', '', $param, 'string');
         $update['port'] = getVar('port', 0, $param, 'int');
         $update['capture_id'] = getVar('capture_id', '', $param, 'string');
@@ -360,6 +361,7 @@ class Admin {
         $arrwhere = "";
     
         $update['status'] = getVar('status', true, $param, 'bool');
+        $update['is_stp'] = getVar('is_stp', '0', $param, 'string');
         $update['ip'] = getVar('ip', '', $param, 'string');
         $update['port'] = getVar('port', 0, $param, 'int');
         $update['capture_id'] = getVar('capture_id', '', $param, 'string');
@@ -478,6 +480,8 @@ class Admin {
         $exten = "";
 	$insertkey = array();
         $insertvalue = array();
+	
+	//$layer = $this->getContainer('layer');
 
         $callwhere = generateWhere($update, 1, $db, 0);
         if(count($callwhere)) {
@@ -492,7 +496,7 @@ class Admin {
 
         $table = "node";            
         
-        $query = "INSERT INTO ".$layer->getTableName($table)." (".implode(",",$insertkey).") VALUES (".implode(",",$insertvalue).")";
+        $query = "INSERT INTO ".$table." (".implode(",",$insertkey).") VALUES (".implode(",",$insertvalue).")";
         if(SYSLOG_ENABLE == 1) syslog(LOG_WARNING,"create node: ".$query);
                   
         $db->executeQuery($query);        

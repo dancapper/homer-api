@@ -741,11 +741,7 @@ class Statistic {
         }
 
         return $answer;
-
-
-        return $answer;
     }
-
 
     public function getStatisticCountry($raw_get_data){
 
@@ -877,7 +873,9 @@ class Statistic {
 
 	/* auth */
         if(count(($adata = $this->getLoggedIn()))) return $adata;
-
+	    
+        if(SYSLOG_ENABLE == 1) openlog("homerlog", LOG_PID | LOG_PERROR, LOG_LOCAL0); 
+	    
         /* get our DB */
         $db = $this->getContainer('db');
         $db->select_db(DB_STATISTIC);
@@ -945,6 +943,8 @@ class Statistic {
         }
 
         $query = $layer->querySearchData($layerHelper);
+	/* extra SYSLOG output for test */
+        if(SYSLOG_ENABLE == 1) syslog(LOG_WARNING,"Stats useragent query: ".$query); 
         $data = $db->loadObjectArray($query);
 
         /* sorting */
